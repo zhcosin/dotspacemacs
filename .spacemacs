@@ -571,6 +571,10 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; 设置 org-mode 的换行
+  (with-eval-after-load 'org
+    (setq org-startup-truncated nil)  ; 禁用截断长行
+    (add-hook 'org-mode-hook 'visual-line-mode))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
