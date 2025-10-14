@@ -32,7 +32,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(sql
+   '(javascript
+     sql
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -49,7 +50,7 @@ This function should only modify configuration layer settings."
      (latex :variables
             latex-backend 'lsp
             latex-build-command "XeLaTeX"
-            latex-enable-auto-fill t
+            latex-enable-auto-fill nil
             latex-enable-folding nil
             latex-refresh-preview t)
      markdown
@@ -584,54 +585,57 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(package-selected-packages
-     '(ace-link aggressive-indent all-the-icons auto-compile auto-highlight-symbol
-                auto-yasnippet avy-jump-helm-line browse-at-remote
-                centered-cursor-mode clean-aindent-mode column-enforce-mode
-                company-auctex company-math company-reftex company-restclient
-                define-word devdocs diff-hl diminish dired-quick-sort
-                disable-mouse dotenv-mode drag-stuff dumb-jump eat edit-indirect
-                elisp-def elisp-demos elisp-slime-nav emr esh-help
-                eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu evil-args
-                evil-cleverparens evil-collection evil-easymotion evil-escape
-                evil-evilified-state evil-exchange evil-goggles evil-iedit-state
-                evil-indent-plus evil-lion evil-lisp-state evil-matchit evil-mc
-                evil-nerd-commenter evil-numbers evil-org evil-surround evil-tex
-                evil-textobj-line evil-tutor evil-unimpaired evil-visual-mark-mode
-                evil-visualstar expand-region eyebrowse fancy-battery
-                flycheck-elsa flycheck-package flycheck-pos-tip
-                flyspell-correct-helm gh-md git-link git-messenger git-modes
-                git-timemachine gitignore-templates gnuplot golden-ratio
-                google-translate helm-ag helm-c-yasnippet helm-comint helm-company
-                helm-descbinds helm-ls-git helm-lsp helm-make helm-mode-manager
-                helm-org helm-org-rifle helm-projectile helm-purpose helm-swoop
-                helm-xref hide-comnt highlight-indentation highlight-numbers
-                highlight-parentheses hl-todo holy-mode htmlize hungry-delete
-                hybrid-mode indent-guide info+ inspector link-hint lorem-ipsum
-                lsp-latex lsp-origami lsp-treemacs lsp-ui macrostep markdown-toc
-                multi-line multi-term mwim nameless ob-http ob-restclient
-                open-junk-file org-cliplink org-contrib org-download org-mime
-                org-pomodoro org-present org-projectile org-rich-yank
-                org-superstar orgit overseer page-break-lines paradox
-                password-generator pcre2el pdf-view-restore popwin quickrun
-                rainbow-delimiters restart-emacs restclient-helm shell-pop
-                smeargle space-doc spaceline spacemacs-purpose-popwin
-                spacemacs-whitespace-cleanup sql-indent sqlup-mode
-                string-edit-at-point string-inflection symbol-overlay symon
-                term-cursor terminal-here toc-org treemacs-evil
-                treemacs-icons-dired treemacs-magit treemacs-persp
-                treemacs-projectile undo-fu undo-fu-session unfill uuidgen
-                vi-tilde-fringe volatile-highlights vundo wgrep winum
-                writeroom-mode ws-butler yasnippet-snippets)))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
-  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(ace-link add-node-modules-path aggressive-indent all-the-icons auto-compile
+              auto-highlight-symbol auto-yasnippet avy-jump-helm-line
+              browse-at-remote bui centered-cursor-mode clean-aindent-mode
+              column-enforce-mode company-auctex company-math company-reftex
+              company-restclient dap-mode define-word devdocs diff-hl diminish
+              dired-quick-sort disable-mouse dotenv-mode drag-stuff dumb-jump
+              eat edit-indirect elisp-def elisp-demos elisp-slime-nav emr
+              esh-help eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu
+              evil-args evil-cleverparens evil-collection evil-easymotion
+              evil-escape evil-evilified-state evil-exchange evil-goggles
+              evil-iedit-state evil-indent-plus evil-lion evil-lisp-state
+              evil-matchit evil-mc evil-nerd-commenter evil-numbers evil-org
+              evil-surround evil-tex evil-textobj-line evil-tutor
+              evil-unimpaired evil-visual-mark-mode evil-visualstar
+              expand-region eyebrowse fancy-battery flycheck-elsa
+              flycheck-package flycheck-pos-tip flyspell-correct-helm ggtags
+              gh-md git-link git-messenger git-modes git-timemachine
+              gitignore-templates gnuplot golden-ratio google-translate grizzl
+              helm-ag helm-c-yasnippet helm-comint helm-company helm-descbinds
+              helm-ls-git helm-lsp helm-make helm-mode-manager helm-org
+              helm-org-rifle helm-projectile helm-purpose helm-swoop helm-xref
+              hide-comnt highlight-indentation highlight-numbers
+              highlight-parentheses hl-todo holy-mode htmlize hungry-delete
+              hybrid-mode impatient-mode import-js indent-guide info+ inspector
+              js-doc js2-mode js2-refactor link-hint livid-mode lorem-ipsum
+              lsp-docker lsp-latex lsp-origami lsp-treemacs lsp-ui macrostep
+              markdown-toc multi-line multi-term multiple-cursors mwim nameless
+              nodejs-repl npm-mode ob-http ob-restclient open-junk-file
+              org-cliplink org-contrib org-download org-mime org-pomodoro
+              org-present org-projectile org-rich-yank org-superstar orgit
+              overseer page-break-lines paradox password-generator pcre2el
+              pdf-view-restore popwin prettier-js quickrun rainbow-delimiters
+              restart-emacs restclient-helm shell-pop simple-httpd skewer-mode
+              smeargle space-doc spaceline spacemacs-purpose-popwin
+              spacemacs-whitespace-cleanup sql-indent sqlup-mode
+              string-edit-at-point string-inflection symbol-overlay symon
+              term-cursor terminal-here tern toc-org treemacs-evil
+              treemacs-icons-dired treemacs-magit treemacs-persp
+              treemacs-projectile undo-fu undo-fu-session unfill uuidgen
+              vi-tilde-fringe volatile-highlights vundo web-beautify wgrep winum
+              writeroom-mode ws-butler yaml yasnippet-snippets)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
