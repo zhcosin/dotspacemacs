@@ -429,11 +429,26 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
   (latex-toc--refresh-buffer)
   (message "所有条目设置为只显示直接子级"))
 
+;; 定义键盘映射 - 必须在 define-derived-mode 之前定义
+(defvar latex-toc-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "RET") 'latex-toc--jump-to-entry)
+    (define-key map (kbd "TAB") 'latex-toc--toggle-fold-at-point)
+    (define-key map (kbd "<tab>") 'latex-toc--toggle-fold-at-point)
+    (define-key map (kbd "r") 'latex-toc-refresh)
+    (define-key map (kbd "g") 'latex-toc-refresh)
+    (define-key map (kbd "q") 'quit-window)
+    (define-key map (kbd "E") 'latex-toc--expand-all)
+    (define-key map (kbd "C") 'latex-toc--collapse-all)
+    (define-key map (kbd "S") 'latex-toc--show-children-only-all)
+    (define-key map [mouse-1] 'latex-toc--jump-to-entry)
+    map)
+  "Keymap for latex-toc-mode.")
+
 (define-derived-mode latex-toc-mode special-mode "LaTeX-TOC"
   "Major mode for LaTeX table of contents."
   (setq buffer-read-only t)
   (setq truncate-lines t)
-  (use-local-map latex-toc-mode-map)
   (setq-local mouse-1-click-follows-link nil))
 
 (defun latex-toc--jump-to-entry ()
@@ -719,6 +734,6 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
   (when (fboundp 'projectile-project-p)
     (when (projectile-project-p)
       (let ((project-root (projectile-project-root)))
-        (latex-toc--get-cached-main-file project-root)))))                    
+        (latex-toc--get-cached-main-file project-root)))))
 
 (provide 'latex-toc)
