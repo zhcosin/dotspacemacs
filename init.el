@@ -39,8 +39,9 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     auto-completion
+     spacemacs-defaults
      better-defaults
+     auto-completion
      emacs-lisp
      git
      restclient
@@ -75,6 +76,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
+                                      cdlatex
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -422,7 +424,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -576,6 +578,8 @@ before packages are loaded."
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
     (add-hook 'org-mode-hook 'visual-line-mode))
+  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+  (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -585,57 +589,57 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(ace-link add-node-modules-path aggressive-indent all-the-icons auto-compile
-              auto-highlight-symbol auto-yasnippet avy-jump-helm-line
-              browse-at-remote bui centered-cursor-mode clean-aindent-mode
-              column-enforce-mode company-auctex company-math company-reftex
-              company-restclient dap-mode define-word devdocs diff-hl diminish
-              dired-quick-sort disable-mouse dotenv-mode drag-stuff dumb-jump
-              eat edit-indirect elisp-def elisp-demos elisp-slime-nav emr
-              esh-help eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu
-              evil-args evil-cleverparens evil-collection evil-easymotion
-              evil-escape evil-evilified-state evil-exchange evil-goggles
-              evil-iedit-state evil-indent-plus evil-lion evil-lisp-state
-              evil-matchit evil-mc evil-nerd-commenter evil-numbers evil-org
-              evil-surround evil-tex evil-textobj-line evil-tutor
-              evil-unimpaired evil-visual-mark-mode evil-visualstar
-              expand-region eyebrowse fancy-battery flycheck-elsa
-              flycheck-package flycheck-pos-tip flyspell-correct-helm ggtags
-              gh-md git-link git-messenger git-modes git-timemachine
-              gitignore-templates gnuplot golden-ratio google-translate grizzl
-              helm-ag helm-c-yasnippet helm-comint helm-company helm-descbinds
-              helm-ls-git helm-lsp helm-make helm-mode-manager helm-org
-              helm-org-rifle helm-projectile helm-purpose helm-swoop helm-xref
-              hide-comnt highlight-indentation highlight-numbers
-              highlight-parentheses hl-todo holy-mode htmlize hungry-delete
-              hybrid-mode impatient-mode import-js indent-guide info+ inspector
-              js-doc js2-mode js2-refactor link-hint livid-mode lorem-ipsum
-              lsp-docker lsp-latex lsp-origami lsp-treemacs lsp-ui macrostep
-              markdown-toc multi-line multi-term multiple-cursors mwim nameless
-              nodejs-repl npm-mode ob-http ob-restclient open-junk-file
-              org-cliplink org-contrib org-download org-mime org-pomodoro
-              org-present org-projectile org-rich-yank org-superstar orgit
-              overseer page-break-lines paradox password-generator pcre2el
-              pdf-view-restore popwin prettier-js quickrun rainbow-delimiters
-              restart-emacs restclient-helm shell-pop simple-httpd skewer-mode
-              smeargle space-doc spaceline spacemacs-purpose-popwin
-              spacemacs-whitespace-cleanup sql-indent sqlup-mode
-              string-edit-at-point string-inflection symbol-overlay symon
-              term-cursor terminal-here tern toc-org treemacs-evil
-              treemacs-icons-dired treemacs-magit treemacs-persp
-              treemacs-projectile undo-fu undo-fu-session unfill uuidgen
-              vi-tilde-fringe volatile-highlights vundo web-beautify wgrep winum
-              writeroom-mode ws-butler yaml yasnippet-snippets)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(package-selected-packages
+     '(ace-link add-node-modules-path aggressive-indent all-the-icons auto-compile
+                auto-highlight-symbol auto-yasnippet avy-jump-helm-line
+                browse-at-remote bui centered-cursor-mode clean-aindent-mode
+                column-enforce-mode company-auctex company-math company-reftex
+                company-restclient dap-mode define-word devdocs diff-hl diminish
+                dired-quick-sort disable-mouse dotenv-mode drag-stuff dumb-jump
+                eat edit-indirect elisp-def elisp-demos elisp-slime-nav emr
+                esh-help eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu
+                evil-args evil-cleverparens evil-collection evil-easymotion
+                evil-escape evil-evilified-state evil-exchange evil-goggles
+                evil-iedit-state evil-indent-plus evil-lion evil-lisp-state
+                evil-matchit evil-mc evil-nerd-commenter evil-numbers evil-org
+                evil-surround evil-tex evil-textobj-line evil-tutor
+                evil-unimpaired evil-visual-mark-mode evil-visualstar
+                expand-region eyebrowse fancy-battery flycheck-elsa
+                flycheck-package flycheck-pos-tip flyspell-correct-helm ggtags
+                gh-md git-link git-messenger git-modes git-timemachine
+                gitignore-templates gnuplot golden-ratio google-translate grizzl
+                helm-ag helm-c-yasnippet helm-comint helm-company helm-descbinds
+                helm-ls-git helm-lsp helm-make helm-mode-manager helm-org
+                helm-org-rifle helm-projectile helm-purpose helm-swoop helm-xref
+                hide-comnt highlight-indentation highlight-numbers
+                highlight-parentheses hl-todo holy-mode htmlize hungry-delete
+                hybrid-mode impatient-mode import-js indent-guide info+ inspector
+                js-doc js2-mode js2-refactor link-hint livid-mode lorem-ipsum
+                lsp-docker lsp-latex lsp-origami lsp-treemacs lsp-ui macrostep
+                markdown-toc multi-line multi-term multiple-cursors mwim nameless
+                nodejs-repl npm-mode ob-http ob-restclient open-junk-file
+                org-cliplink org-contrib org-download org-mime org-pomodoro
+                org-present org-projectile org-rich-yank org-superstar orgit
+                overseer page-break-lines paradox password-generator pcre2el
+                pdf-view-restore popwin prettier-js quickrun rainbow-delimiters
+                restart-emacs restclient-helm shell-pop simple-httpd skewer-mode
+                smeargle space-doc spaceline spacemacs-purpose-popwin
+                spacemacs-whitespace-cleanup sql-indent sqlup-mode
+                string-edit-at-point string-inflection symbol-overlay symon
+                term-cursor terminal-here tern toc-org treemacs-evil
+                treemacs-icons-dired treemacs-magit treemacs-persp
+                treemacs-projectile undo-fu undo-fu-session unfill uuidgen
+                vi-tilde-fringe volatile-highlights vundo web-beautify wgrep winum
+                writeroom-mode ws-butler yaml yasnippet-snippets)))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   )
+  )
