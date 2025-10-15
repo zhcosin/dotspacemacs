@@ -584,7 +584,12 @@ before packages are loaded."
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
   ;; 添加自定义 snippet 目录
-  (setq yas-snippet-dirs (append yas-snippet-dirs '("~/.spacemacs.d/snippets")))
+  (setq yas-snippet-dirs (append yas-snippet-dirs 
+                                  (list (expand-file-name "snippets" dotspacemacs-directory))))
+  
+  ;; 确保 yasnippet 正确加载和重新加载 snippets
+  (with-eval-after-load 'yasnippet
+    (yas-reload-all))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
