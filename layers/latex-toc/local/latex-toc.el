@@ -45,12 +45,7 @@
     
     ;; 确保在源LaTeX缓冲区中查找主文档
     (with-current-buffer source-buffer
-      (message "在源缓冲区中查找主文档，缓冲区: %s, 文件: %s" 
-               (buffer-name) (buffer-file-name))
       (setq main-file (latex-toc--find-main-file)))
-    
-    ;; 调试信息：显示查找到的主文档
-    (message "查找到的主文档: %s" main-file)
     
     ;; 检查是否找到主文档
     (unless main-file
@@ -76,7 +71,6 @@
 (defun latex-toc--collect-entries-in-file (main-file-name filename entries)
   "在指定文件中收集章节信息"
   (with-temp-buffer
-    (message "collect entries from file %s" filename)
     (insert-file-contents filename)
     (latex-mode)
     
@@ -400,16 +394,14 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
                           (let ((current-entry (get-text-property (point) 'latex-toc-entry)))
                             (not (and current-entry
                                       (string= (cdr (assoc 'id current-entry)) entry-id)))))
-                (forward-line 1)))
-            (message "切换到: %s" (cdr (assoc new-state state-names))))
+                (forward-line 1))))
         (message "该条目没有子条目")))))
 
 (defun latex-toc--expand-all ()
   "展开所有条目"
   (interactive)
   (clrhash latex-toc--folded-entries)
-  (latex-toc--refresh-buffer)
-  (message "已展开所有条目"))
+  (latex-toc--refresh-buffer))
 
 (defun latex-toc--collapse-all ()
   "折叠所有有子条目的条目"
@@ -417,8 +409,7 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
   (dolist (entry latex-toc--entries)
     (when (latex-toc--entry-has-children-p entry latex-toc--entries)
       (latex-toc--set-fold-state entry 'folded)))
-  (latex-toc--refresh-buffer)
-  (message "已折叠所有条目"))
+  (latex-toc--refresh-buffer))
 
 (defun latex-toc--show-children-only-all ()
   "将所有有子条目的条目设置为只显示直接子级"
@@ -426,8 +417,7 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
   (dolist (entry latex-toc--entries)
     (when (latex-toc--entry-has-children-p entry latex-toc--entries)
       (latex-toc--set-fold-state entry 'children-only)))
-  (latex-toc--refresh-buffer)
-  (message "所有条目设置为只显示直接子级"))
+  (latex-toc--refresh-buffer))
 
 ;; 定义键盘映射 - 必须在 define-derived-mode 之前定义
 (defvar latex-toc-mode-map
@@ -517,99 +507,75 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
 
 (defun latex-toc--get-tex-master ()
   "从AUCTeX获取主文档信息或解析文件中的TeX-master注释"
-  (let ((result
-         (or
-          ;; 首先尝试从AUCTeX变量获取
-          (when (bound-and-true-p TeX-master)
-            (message "从AUCTeX变量获取TeX-master: %s" TeX-master)
-            (if (stringp TeX-master)
-                (expand-file-name TeX-master)
-              ;; 如果TeX-master是t，说明当前文件是主文档，但我们需要检查文件注释
-              nil))
-          
-          ;; 尝试解析文件中的TeX-master注释
-          (latex-toc--parse-tex-master-from-file))))
-    (message "latex-toc--get-tex-master 返回: %s" result)
-    result))
+  (or
+   ;; 首先尝试从AUCTeX变量获取
+   (when (bound-and-true-p TeX-master)
+     (if (stringp TeX-master)
+         (expand-file-name TeX-master)
+       ;; 如果TeX-master是t，说明当前文件是主文档，但我们需要检查文件注释
+       nil))
+   
+   ;; 尝试解析文件中的TeX-master注释
+   (latex-toc--parse-tex-master-from-file)))
 
 (defun latex-toc--parse-tex-master-from-file ()
   "从当前缓冲区中解析TeX-master注释"
   (save-excursion
-    (message "开始解析缓冲区中的TeX-master注释...")
-    (message "当前缓冲区名称: %s" (buffer-name))
-    (message "当前缓冲区文件路径: %s" (buffer-file-name))
-    
     ;; 直接从当前缓冲区解析，而不是从磁盘文件
     (goto-char (point-min))
     (let ((buffer-content (buffer-string)))
-      (message "缓冲区总长度: %d 字符" (length buffer-content))
-      (message "缓冲区是否包含TeX-master: %s" 
-               (if (string-match "TeX-master" buffer-content) "是" "否")))
-    
-    ;; 检查文件末尾内容
-    (goto-char (point-max))
-    (forward-line -5)  ; 向上查看最后5行
-    (let ((end-content (buffer-substring-no-properties (point) (point-max))))
-      (message "缓冲区末尾5行内容: %S" end-content))
-    
-    ;; 支持多种TeX-master注释格式
-    (let ((result
-           (or
-            ;; 格式1: 直接搜索TeX-master（带引号）
-            (progn
-              (goto-char (point-min))
-              (when (re-search-forward "TeX-master: *\"\\([^\"]+\\)\"" nil t)
-                (let ((master-file (match-string 1)))
-                  (message "找到TeX-master（带引号）: %s" master-file)
-                  master-file)))
-            
-            ;; 格式2: 不带引号的TeX-master
-            (progn
-              (goto-char (point-min))
-              (when (re-search-forward "TeX-master: *\\([^ \t\n\"]+\\)" nil t)
-                (let ((master-file (match-string 1)))
-                  (message "找到TeX-master（不带引号）: %s" master-file)
-                  master-file)))
-            
-            ;; 格式3: 手动解析，逐行检查
-            (progn
-              (goto-char (point-min))
-              (let ((found nil))
-                (while (and (not found) (not (eobp)))
-                  (let ((line (buffer-substring-no-properties 
-                               (line-beginning-position) 
-                               (line-end-position))))
-                    (when (string-match "TeX-master.*\"\\([^\"]+\\)\"" line)
-                      (setq found (match-string 1 line))
-                      (message "逐行解析找到TeX-master: %s" found)))
-                  (forward-line 1))
-                found)))))
       
-      (when result
-        (message "原始解析结果: %s" result)
-        ;; 清理结果
-        (setq result (string-trim result))
-        (setq result (replace-regexp-in-string "[\"']" "" result))
-        (message "清理后的结果: %s" result)
+      ;; 检查文件末尾内容
+      (goto-char (point-max))
+      (forward-line -5)  ; 向上查看最后5行
+      (let ((end-content (buffer-substring-no-properties (point) (point-max))))
         
-        ;; 自动添加.tex扩展名（如果没有的话）
-        (unless (string-match "\\.tex$" result)
-          (setq result (concat result ".tex")))
-        (message "添加扩展名后: %s" result)
-        
-        ;; 处理相对路径
-        (let ((current-dir (file-name-directory (buffer-file-name))))
-          (message "当前文件目录: %s" current-dir)
-          (let ((full-path
-                 (if (file-name-absolute-p result)
-                     result
-                   (expand-file-name result current-dir))))
-            (message "解析后的完整路径: %s" full-path)
-            (message "文件是否存在: %s" (if (file-exists-p full-path) "是" "否"))
-            (setq result full-path))))
-      
-      (message "latex-toc--parse-tex-master-from-file 返回: %s" result)
-      result)))
+        ;; 支持多种TeX-master注释格式
+        (let ((result
+               (or
+                ;; 格式1: 直接搜索TeX-master（带引号）
+                (progn
+                  (goto-char (point-min))
+                  (when (re-search-forward "TeX-master: *\"\\([^\"]+\\)\"" nil t)
+                    (match-string 1)))
+                
+                ;; 格式2: 不带引号的TeX-master
+                (progn
+                  (goto-char (point-min))
+                  (when (re-search-forward "TeX-master: *\\([^ \t\n\"]+\\)" nil t)
+                    (match-string 1)))
+                
+                ;; 格式3: 手动解析，逐行检查
+                (progn
+                  (goto-char (point-min))
+                  (let ((found nil))
+                    (while (and (not found) (not (eobp)))
+                      (let ((line (buffer-substring-no-properties 
+                                   (line-beginning-position) 
+                                   (line-end-position))))
+                        (when (string-match "TeX-master.*\"\\([^\"]+\\)\"" line)
+                          (setq found (match-string 1 line))))
+                      (forward-line 1))
+                    found)))))
+          
+          (when result
+            ;; 清理结果
+            (setq result (string-trim result))
+            (setq result (replace-regexp-in-string "[\"']" "" result))
+            
+            ;; 自动添加.tex扩展名（如果没有的话）
+            (unless (string-match "\\.tex$" result)
+              (setq result (concat result ".tex")))
+            
+            ;; 处理相对路径
+            (let ((current-dir (file-name-directory (buffer-file-name))))
+              (let ((full-path
+                     (if (file-name-absolute-p result)
+                         result
+                       (expand-file-name result current-dir))))
+                (setq result full-path))))
+          
+          result)))))
 
 (defun latex-toc--find-by-documentclass (&optional dir)
   "在目录中查找包含documentclass的文件"
