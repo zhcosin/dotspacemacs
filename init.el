@@ -42,7 +42,8 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      spacemacs-defaults
      better-defaults
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-enable-snippets-in-popup t)
      emacs-lisp
      git
      restclient
@@ -57,7 +58,7 @@ This function should only modify configuration layer settings."
             latex-refresh-preview t)
      markdown
      multiple-cursors
-     org
+     (org :variables org-modules '(org-tempo))
      ;; 启用 PDF layer 以支持 PDF 预览
      pdf
      (shell :variables
@@ -581,6 +582,9 @@ before packages are loaded."
     (add-hook 'org-mode-hook 'visual-line-mode))
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+
+  ;; 添加自定义 snippet 目录
+  (setq yas-snippet-dirs (append yas-snippet-dirs '("~/.spacemacs.d/snippets")))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
