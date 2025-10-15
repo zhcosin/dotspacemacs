@@ -56,6 +56,7 @@ This function should only modify configuration layer settings."
             latex-enable-auto-fill nil
             latex-enable-folding nil
             latex-refresh-preview t)
+     latex-toc
      markdown
      multiple-cursors
      (org :variables org-modules '(org-tempo))
