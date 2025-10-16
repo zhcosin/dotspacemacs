@@ -602,6 +602,40 @@ before packages are loaded."
   ;; 设置默认字体集中的中文字体
   (set-fontset-font "fontset-default" 'han "KaiTi")
   (set-fontset-font "fontset-default" 'cjk-misc "KaiTi")
+
+  ;; 在 Evil 插入模式下启用 Emacs 风格的编辑按键
+  (with-eval-after-load 'evil
+    ;; 在插入模式下绑定 Emacs 风格的按键
+    (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
+    (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+    (define-key evil-insert-state-map (kbd "C-n") 'next-line)
+    (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
+    (define-key evil-insert-state-map (kbd "C-f") 'forward-char)
+    (define-key evil-insert-state-map (kbd "C-b") 'backward-char)
+    (define-key evil-insert-state-map (kbd "C-d") 'delete-char)
+    (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+    (define-key evil-insert-state-map (kbd "C-y") 'yank)
+    (define-key evil-insert-state-map (kbd "M-f") 'forward-word)
+    (define-key evil-insert-state-map (kbd "M-b") 'backward-word)
+    (define-key evil-insert-state-map (kbd "M-d") 'kill-word)
+    (define-key evil-insert-state-map (kbd "M-DEL") 'backward-kill-word)
+    (define-key evil-insert-state-map (kbd "C-w") 'backward-kill-word)
+    (define-key evil-insert-state-map (kbd "C-u") 'universal-argument)
+    (define-key evil-insert-state-map (kbd "C-t") 'transpose-chars)
+    (define-key evil-insert-state-map (kbd "M-t") 'transpose-words)
+    (define-key evil-insert-state-map (kbd "C-v") 'scroll-up-command)
+    (define-key evil-insert-state-map (kbd "M-v") 'scroll-down-command)
+    
+    ;; 也可以在 Emacs 状态下启用这些绑定
+    (define-key evil-emacs-state-map (kbd "C-a") 'beginning-of-line)
+    (define-key evil-emacs-state-map (kbd "C-e") 'end-of-line)
+    (define-key evil-emacs-state-map (kbd "C-n") 'next-line)
+    (define-key evil-emacs-state-map (kbd "C-p") 'previous-line)
+    (define-key evil-emacs-state-map (kbd "C-f") 'forward-char)
+    (define-key evil-emacs-state-map (kbd "C-b") 'backward-char)
+    (define-key evil-emacs-state-map (kbd "C-d") 'delete-char)
+    (define-key evil-emacs-state-map (kbd "C-k") 'kill-line)
+    (define-key evil-emacs-state-map (kbd "C-y") 'yank))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
