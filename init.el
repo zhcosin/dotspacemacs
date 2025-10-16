@@ -591,6 +591,16 @@ before packages are loaded."
   ;; 确保 yasnippet 正确加载和重新加载 snippets
   (with-eval-after-load 'yasnippet
     (yas-reload-all))
+
+  ;; 设置中文字体为楷体
+  (dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset
+                      (font-spec :family "KaiTi")))
+  
+  ;; 设置默认字体集中的中文字体
+  (set-fontset-font "fontset-default" 'han "KaiTi")
+  (set-fontset-font "fontset-default" 'cjk-misc "KaiTi")
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
