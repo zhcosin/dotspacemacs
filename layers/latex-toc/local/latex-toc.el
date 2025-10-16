@@ -439,7 +439,15 @@ SECTION-LEVEL 对应章节目令的层级，例如：0=chapter, 1=section, 2=sub
   "Major mode for LaTeX table of contents."
   (setq buffer-read-only t)
   (setq truncate-lines t)
-  (setq-local mouse-1-click-follows-link nil))
+  (setq-local mouse-1-click-follows-link nil)
+  ;; 确保在 Evil 模式下也能正确绑定键
+  (when (fboundp 'evil-define-key)
+    (evil-define-key 'normal latex-toc-mode-map
+      (kbd "RET") 'latex-toc--jump-to-entry
+      (kbd "<return>") 'latex-toc--jump-to-entry)
+    (evil-define-key 'motion latex-toc-mode-map
+      (kbd "RET") 'latex-toc--jump-to-entry
+      (kbd "<return>") 'latex-toc--jump-to-entry)))
 
 (defun latex-toc--jump-to-entry ()
   "跳转到当前条目对应的位置"
