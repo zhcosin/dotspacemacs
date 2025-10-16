@@ -32,15 +32,16 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(yaml
-     javascript
-     json
-     sql
+   '(
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
+     yaml
+     javascript
+     json
+     sql
      spacemacs-defaults
      better-defaults
      (auto-completion :variables
@@ -624,7 +625,7 @@ before packages are loaded."
     (define-key evil-insert-state-map (kbd "C-t") 'transpose-chars)
     (define-key evil-insert-state-map (kbd "M-t") 'transpose-words)
     (define-key evil-insert-state-map (kbd "C-v") 'scroll-up-command)
-    (define-key evil-insert-state-map (kbd "M-v") 'scroll-down-command)
+    (define-key evil-insert-state-map (kbd "M-v") 'scroll-down-command) bb
     
     ;; 也可以在 Emacs 状态下启用这些绑定
     (define-key evil-emacs-state-map (kbd "C-a") 'beginning-of-line)
