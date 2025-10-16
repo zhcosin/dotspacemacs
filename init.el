@@ -34,6 +34,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layers
    '(yaml
      javascript
+     json
      sql
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
