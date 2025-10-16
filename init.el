@@ -583,6 +583,60 @@ before packages are loaded."
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
     (add-hook 'org-mode-hook 'visual-line-mode))
+  
+  ;; 配置 org-mode LaTeX 导出以支持中文
+  (with-eval-after-load 'ox-latex
+    ;; 设置默认的 LaTeX 编译器为 XeLaTeX
+    (setq org-latex-pdf-process
+          '("xelatex -interaction nonstopmode -output-directory %o %f"
+            "xelatex -interaction nonstopmode -output-directory %o %f"
+            "xelatex -interaction nonstopmode -output-directory %o %f"))
+    
+    ;; 添加中文支持的 LaTeX 类
+    (add-to-list 'org-latex-classes
+                 '("ctexart"
+                   "\\documentclass[11pt]{ctexart}"
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    
+    (add-to-list 'org-latex-classes
+                 '("ctexrep"
+                   "\\documentclass[11pt]{ctexrep}"
+                   ("\\part{%s}" . "\\part*{%s}")
+                   ("\\chapter{%s}" . "\\chapter*{%s}")
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+    
+    (add-to-list 'org-latex-classes
+                 '("ctexbook"
+                   "\\documentclass[11pt]{ctexbook}"
+                   ("\\part{%s}" . "\\part*{%s}")
+                   ("\\chapter{%s}" . "\\chapter*{%s}")
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+    
+    ;; 设置默认的 LaTeX 类为支持中文的 ctexart
+    (setq org-latex-default-class "ctexart")
+    
+    ;; 添加常用的 LaTeX 包
+    (add-to-list 'org-latex-packages-alist '("" "xeCJK" t))
+    (add-to-list 'org-latex-packages-alist '("" "fontspec" t))
+    (add-to-list 'org-latex-packages-alist '("" "xunicode" t))
+    (add-to-list 'org-latex-packages-alist '("" "xltxtra" t))
+    
+    ;; 设置中文字体（可根据系统中安装的字体进行调整）
+    (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
+    
+    ;; 添加自定义的 LaTeX 头部设置
+    (setq org-latex-default-packages-alist
+          (cons '("AUTO" "inputenc" t ("pdflatex"))
+                (remove '("AUTO" "inputenc" t) org-latex-default-packages-alist))))
+  
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
