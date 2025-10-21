@@ -584,7 +584,7 @@ before packages are loaded."
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
     (add-hook 'org-mode-hook 'visual-line-mode))
-  
+
   ;; 配置 org-mode LaTeX 导出以支持中文
   (with-eval-after-load 'ox-latex
     ;; 设置默认的 LaTeX 编译器为 XeLaTeX
@@ -592,7 +592,7 @@ before packages are loaded."
           '("xelatex -interaction nonstopmode -output-directory %o %f"
             "xelatex -interaction nonstopmode -output-directory %o %f"
             "xelatex -interaction nonstopmode -output-directory %o %f"))
-    
+
     ;; 添加中文支持的 LaTeX 类
     (add-to-list 'org-latex-classes
                  '("ctexart"
@@ -602,7 +602,7 @@ before packages are loaded."
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-    
+
     (add-to-list 'org-latex-classes
                  '("ctexrep"
                    "\\documentclass[11pt]{ctexrep}"
@@ -611,7 +611,7 @@ before packages are loaded."
                    ("\\section{%s}" . "\\section*{%s}")
                    ("\\subsection{%s}" . "\\subsection*{%s}")
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-    
+
     (add-to-list 'org-latex-classes
                  '("ctexbook"
                    "\\documentclass[11pt]{ctexbook}"
@@ -620,31 +620,31 @@ before packages are loaded."
                    ("\\section{%s}" . "\\section*{%s}")
                    ("\\subsection{%s}" . "\\subsection*{%s}")
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-    
+
     ;; 设置默认的 LaTeX 类为支持中文的 ctexart
     (setq org-latex-default-class "ctexart")
-    
+
     ;; 添加常用的 LaTeX 包
     (add-to-list 'org-latex-packages-alist '("" "xeCJK" t))
     (add-to-list 'org-latex-packages-alist '("" "fontspec" t))
     (add-to-list 'org-latex-packages-alist '("" "xunicode" t))
     (add-to-list 'org-latex-packages-alist '("" "xltxtra" t))
-    
+
     ;; 设置中文字体（可根据系统中安装的字体进行调整）
     (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
-    
+
     ;; 添加自定义的 LaTeX 头部设置
     (setq org-latex-default-packages-alist
           (cons '("AUTO" "inputenc" t ("pdflatex"))
                 (remove '("AUTO" "inputenc" t) org-latex-default-packages-alist))))
-  
+
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
   ;; 添加自定义 snippet 目录
-  (setq yas-snippet-dirs (append yas-snippet-dirs 
-                                  (list (expand-file-name "snippets" dotspacemacs-directory))))
-  
+  (setq yas-snippet-dirs (append yas-snippet-dirs
+                                 (list (expand-file-name "snippets" dotspacemacs-directory))))
+
   ;; 确保 yasnippet 正确加载和重新加载 snippets
   (with-eval-after-load 'yasnippet
     (yas-reload-all))
@@ -654,7 +654,7 @@ before packages are loaded."
     (set-fontset-font (frame-parameter nil 'font)
                       charset
                       (font-spec :family "KaiTi")))
-  
+
   ;; 设置默认字体集中的中文字体
   (set-fontset-font "fontset-default" 'han "KaiTi")
   (set-fontset-font "fontset-default" 'cjk-misc "KaiTi")
@@ -680,8 +680,8 @@ before packages are loaded."
     (define-key evil-insert-state-map (kbd "C-t") 'transpose-chars)
     (define-key evil-insert-state-map (kbd "M-t") 'transpose-words)
     (define-key evil-insert-state-map (kbd "C-v") 'scroll-up-command)
-    (define-key evil-insert-state-map (kbd "M-v") 'scroll-down-command) bb
-    
+    (define-key evil-insert-state-map (kbd "M-v") 'scroll-down-command)
+
     ;; 也可以在 Emacs 状态下启用这些绑定
     (define-key evil-emacs-state-map (kbd "C-a") 'beginning-of-line)
     (define-key evil-emacs-state-map (kbd "C-e") 'end-of-line)
