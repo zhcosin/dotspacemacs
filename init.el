@@ -692,6 +692,17 @@ before packages are loaded."
     (define-key evil-emacs-state-map (kbd "C-d") 'delete-char)
     (define-key evil-emacs-state-map (kbd "C-k") 'kill-line)
     (define-key evil-emacs-state-map (kbd "C-y") 'yank))
+
+
+  ;; 集成 msys2
+  (setq shell-file-name "D:/msys64/msys2_shell.cmd")
+  (setq explicit-msys2_shell.cmd-args '("-defterm" "-here" "-no-start" "-ucrt64" "-i"))  ;; 作为交互式登录shell启动
+  ;;(setq explicit-bash-args '("-tt"))  ;; 作为交互式登录shell启动
+  ;;(setenv "MSYSTEM" "MINGW64")
+  ;;(setenv "CHERE_INVOKING" "1")
+  ;;(setenv "MSYS2_PATH_TYPE" "inherit")
+  (add-to-list 'exec-path "D:/msys64/usr/bin")
+  (setenv "PATH" (concat "D:/msys64/mingw64/bin;" (getenv "PATH")))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
