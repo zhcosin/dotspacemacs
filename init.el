@@ -702,14 +702,9 @@ before packages are loaded."
     (define-key evil-emacs-state-map (kbd "C-y") 'yank))
 
 
-  ;; 集成 msys2
-  (setq shell-file-name "D:/msys64/usr/bin/bash.exe")
-  (setq explicit-bash.exe-args '("--login" "-i"))  ;; 作为交互式登录shell启动
-  ;;(setenv "MSYSTEM" "MINGW64")
-  ;;(setenv "CHERE_INVOKING" "1")
-  ;;(setenv "MSYS2_PATH_TYPE" "inherit")
-  ;;(add-to-list 'exec-path "D:/msys64/usr/bin")
-  ;;(setenv "PATH" (concat "D:/msys64/mingw64/bin;" (getenv "PATH")))
+  ;; 集成 msys2，由于在 windows 上这个集成会改变 emacs 所使用的 shell，进而影响 latex 预览等功能，所以暂不启用
+  ;;(setq shell-file-name "D:/msys64/usr/bin/bash.exe")
+  ;;(setq explicit-bash.exe-args '("--login" "-i"))  ;; 作为交互式登录shell启动
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
