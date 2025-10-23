@@ -638,8 +638,16 @@ before packages are loaded."
           (cons '("AUTO" "inputenc" t ("pdflatex"))
                 (remove '("AUTO" "inputenc" t) org-latex-default-packages-alist))))
 
+  ;; prettify-symbol-mode 相关设置
+  ;; prettify-symbol-mode 在替换 latex 数学符号为 unicode 字符时可能遇到符号不在字库的问题，将与数学有关的字体更改为 Cambria Math.
+  (set-fontset-font "fontset-default" 'mathematical "Cambria Math")
+  ;; prettify-symbol-mode 自动展开光标附近的宏命令
+  (setq prettify-symbols-unprettify-at-point t)
+
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+  (add-hook 'LaTeX-mode-hook (lambda () (prettify-symbols-mode t)))
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+  (add-hook 'org-mode-hook (lambda () (prettify-symbols-mode t)))
 
   ;; 添加自定义 snippet 目录
   (setq yas-snippet-dirs (append yas-snippet-dirs
@@ -695,14 +703,13 @@ before packages are loaded."
 
 
   ;; 集成 msys2
-  (setq shell-file-name "D:/msys64/msys2_shell.cmd")
-  (setq explicit-msys2_shell.cmd-args '("-defterm" "-here" "-no-start" "-ucrt64" "-i"))  ;; 作为交互式登录shell启动
-  ;;(setq explicit-bash-args '("-tt"))  ;; 作为交互式登录shell启动
+  (setq shell-file-name "D:/msys64/usr/bin/bash.exe")
+  (setq explicit-bash.exe-args '("--login" "-i"))  ;; 作为交互式登录shell启动
   ;;(setenv "MSYSTEM" "MINGW64")
   ;;(setenv "CHERE_INVOKING" "1")
   ;;(setenv "MSYS2_PATH_TYPE" "inherit")
-  (add-to-list 'exec-path "D:/msys64/usr/bin")
-  (setenv "PATH" (concat "D:/msys64/mingw64/bin;" (getenv "PATH")))
+  ;;(add-to-list 'exec-path "D:/msys64/usr/bin")
+  ;;(setenv "PATH" (concat "D:/msys64/mingw64/bin;" (getenv "PATH")))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
