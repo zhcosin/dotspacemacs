@@ -346,12 +346,15 @@ The elements of LIST are not copied, just the list structure itself."
                                    (equal col (car (plist-get last-history 'dstcord))))
                               (chess-cn--get-piece-selected-face curt-piece))
                              (t (chess-cn--get-piece-face curt-piece))))
-                (substring board-row-str 2 max-width))
+                ;; 修复：防越界，当 max-width < 2 时返回空字符串
+                (if (>= max-width 2) (substring board-row-str 2 max-width) ""))
              (cond
               ((and last-history
                     (equal row (cdr (plist-get last-history 'oldcord)))
                     (equal col (car (plist-get last-history 'oldcord))))
-               (concat (propertize (substring board-row-str 0 1) 'font-lock-face (chess-cn--get-piece-selected-face (plist-get last-history 'kill-piece))) (substring board-row-str 1 max-width))
+               ;; 修复：防越界，第二段起始位为 1，若 max-width < 1 则返回空
+               (concat (propertize (substring board-row-str 0 1) 'font-lock-face (chess-cn--get-piece-selected-face (plist-get last-history 'kill-piece)))
+                       (if (>= max-width 1) (substring board-row-str 1 max-width) ""))
                )
               (t (substring board-row-str 0 max-width))
               )
@@ -376,6 +379,32 @@ The elements of LIST are not copied, just the list structure itself."
 
 ;;; }}} 字符界面表示层
 
+;; 中文字体缩放，确保中文宽度≈两英文字符（仅图形界面）
+(defvar chess-cn--cjk-rescale-alist
+  '(("KaiTi"              . 1.20)
+    ("Microsoft YaHei UI" . 1.20)
+    ("Microsoft YaHei"    . 1.20)
+    ("NSimSun"            . 1.20)
+    ("SimSun"             . 1.20)
+    ;; 若已安装等宽 CJK 字体，可将倍率设为 1.0
+    ("Noto Sans Mono CJK SC" . 1.00))
+  "用于缓冲区内缩放中文字体的表，使中文宽度接近两个英文字符宽。")
+
+(defun chess-cn--apply-cjk-rescale ()
+  "在当前缓冲区应用中文字体缩放与字体绑定。"
+  (when (display-graphic-p)
+    (let ((fonts chess-cn--cjk-rescale-alist)
+          chosen-scale)
+      (while (and fonts (not chosen-scale))
+        (let* ((pair (car fonts))
+               (fam  (car pair))
+               (scale (cdr pair)))
+          (when (find-font (font-spec :family fam))
+            (setq chosen-scale scale)))
+        (setq fonts (cdr fonts)))
+      ;; 若找不到匹配字体，则使用一个合理默认倍率
+      (setq chess-cn--piece-face-height (or chosen-scale 1.35)))))
+
 ;;; {{{ 内核框架
 ;; 缓冲区名称
 (defconst chess-cn--buffer-name "*cn-chess*")
@@ -383,6 +412,10 @@ The elements of LIST are not copied, just the list structure itself."
 ;; 对弈双方
 (defconst chess-cn--side-blue '(name "蓝方" style (:background "blue" :foreground "white") selected-style (:background "white" :foreground "blue")))
 (defconst chess-cn--side-red '(name "红方" style (:background "red" :foreground "white") selected-style (:background "white" :foreground "red")))
+
+;; 缓冲区内棋子面部高度缩放（仅影响棋盘缓冲区）
+(defvar-local chess-cn--piece-face-height 1.0
+  "仅在当前棋盘缓冲区中，调整棋子字符的高度（影响宽度），用于让中文宽度更接近两个英文字符。")
 
 (defun chess-cn--get-side-by-flag (flag)
   "根据对局方标识获取对局方信息"
@@ -482,11 +515,13 @@ The elements of LIST are not copied, just the list structure itself."
 
 (defun chess-cn--get-piece-face (chess-cn--piece)
   "获取棋子用于显示的文本属性"
-  (plist-get (symbol-value (plist-get (symbol-value chess-cn--piece) 'side)) 'style))
+   (let ((style (plist-get (symbol-value (plist-get (symbol-value chess-cn--piece) 'side)) 'style)))
+    (plist-put (copy-sequence style) :height chess-cn--piece-face-height)))
 
 (defun chess-cn--get-piece-selected-face (chess-cn--piece)
   "获取棋子用于显示的文本属性"
-  (plist-get (symbol-value (plist-get (symbol-value chess-cn--piece) 'side)) 'selected-style))
+  (let ((style (plist-get (symbol-value (plist-get (symbol-value chess-cn--piece) 'side)) 'selected-style)))
+    (plist-put (copy-sequence style) :height chess-cn--piece-face-height)))
 
 (defun chess-cn--copy-init-situation (chess-cn--init-situation)
   "深拷贝初始棋局"
@@ -1081,6 +1116,8 @@ is-move t 为移动, nil 为吃子
   (get-buffer-create chess-cn--buffer-name)
   (switch-to-buffer chess-cn--buffer-name)
   (chinese-chess-cn--mode)
+  ;; 为棋局缓冲区应用中文字体缩放与绑定
+  (chess-cn--apply-cjk-rescale)
   (setq buffer-read-only nil)
   (erase-buffer)
   (font-lock-mode 1)
@@ -1129,6 +1166,8 @@ is-move t 为移动, nil 为吃子
   (get-buffer-create chess-cn--buffer-name)
   (switch-to-buffer chess-cn--buffer-name)
   (chinese-chess-cn--mode)
+  ;; 为棋局缓冲区应用中文字体缩放与绑定
+  (chess-cn--apply-cjk-rescale)
   (setq buffer-read-only nil)
   (erase-buffer)
   (font-lock-mode 1)
