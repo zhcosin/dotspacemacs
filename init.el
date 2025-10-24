@@ -71,7 +71,8 @@ This function should only modify configuration layer settings."
      syntax-checking
      version-control
      treemacs
-     spacemacs-project)
+     spacemacs-project
+     chess-cn)
 
    ;; List of additional packages that will be installed without being wrapped
    ;; in a layer (generally the packages are installed only and should still be
