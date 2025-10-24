@@ -234,54 +234,52 @@ The elements of LIST are not copied, just the list structure itself."
 "
   "棋盘")
 
-;; 缓冲区位置转换为棋盘坐标
 (defun chess-cn--position-to-coordinate (pos)
+  "缓冲区位置转棋盘坐标，始终以棋子行为基准进行对齐。"
   (and (>= pos chess-cn--board-start)
        (< pos chess-cn--board-end)
        (save-excursion
-         (let ((row 0)
-               (col 0))
+         ;; 计算当前行相对棋盘起始的行索引，并压到棋子行
+         (let* ((start-line (save-excursion (goto-char chess-cn--board-start) (line-number-at-pos)))
+                (cur-line   (save-excursion (goto-char pos) (line-number-at-pos)))
+                (delta-line (- cur-line start-line))
+                ;; 每个棋盘行占用 chess-cn--board-grid-high 行（默认 3）
+                (row (max 0 (min 9 (/ delta-line chess-cn--board-grid-high)))))
+           ;; 移到该棋子行行首，并跳过左侧偏移
            (goto-char chess-cn--board-start)
-           (forward-char chess-cn--board-grid-offsetset)
-           (while (< (point) pos)
-             (forward-char)
-             (setq col (1+ col))
-             (unless (and (> (char-before) ?\x00) (< (char-before) ?\xff)) ;; 一个中文字符占据两个英文字符的位置
-               (setq col (1+ col)))
-             (when (char-equal (char-before) ?\n)
-               (forward-char chess-cn--board-grid-offsetset)
-               (setq row (1+ row))
-               (setq col 0)))
-           (cons (/ col chess-cn--board-grid-width) (/ row chess-cn--board-grid-high))))))
+           (forward-line (* row chess-cn--board-grid-high))
+           (move-to-column chess-cn--board-grid-offsetset)
+           (let* ((line-beg (point))
+                  ;; 计算当前列相对于棋子行的列号（固定格宽）
+                  (cur-col (save-excursion
+                             (goto-char pos)
+                             (max 0 (- (current-column) chess-cn--board-grid-offsetset))))
+                  (col (max 0 (min 8 (/ cur-col chess-cn--board-grid-width)))))
+             (cons col row))))))
 
-;; 棋盘坐标转换为缓冲区位置
 (defun chess-cn--coordinate-to-position (cord)
-  (and (>= (car cord) 0)
-       (<= (car cord) 8)
-       (>= (cdr cord) 0)
-       (<= (cdr cord) 9)
-       (let ((row 0) (col 0) (pos chess-cn--board-start))
-         (let ((board-at-row (aref (plist-get chess-cn--playing 'situation) row)))
-           (while (< row (cdr cord))
-             (setq board-at-row (aref (plist-get chess-cn--playing 'situation) row))
-             (setq pos (+ pos chess-cn--board-grid-offsetset)) ;; 棋盘左侧偏移
-             (while (< col 9)
-               ;; 若 (col . row) 处有棋子，则增加 chess-cn--board-grid-width - 1 个位置，否则 增加 chess-cn--board-grid-width 个位置
-               (setq pos (+ pos (if (null (aref board-at-row col)) (if (= col 8) 2 chess-cn--board-grid-width) (if (= col 8) 1 (1- chess-cn--board-grid-width)))))
-               (setq col (1+ col)))
-             (setq pos (1+ pos))  ;; 换行符占据一个位置
-             (setq pos (+ pos (* chess-cn--board-grid-offsetset (1- chess-cn--board-grid-high)))) ;; 棋盘左侧偏移(棋盘方格调试纯字符行)
-             (setq pos (+ pos (* (1- chess-cn--board-grid-high) (+ 3 (* chess-cn--board-grid-width 8))))) ;; 棋盘方格高度产生的纯字符行，加上末尾的棋子位置(2个字符)和1个换行符.
-             (setq row (1+ row))
-             (setq col 0))
-           (setq board-at-row (aref (plist-get chess-cn--playing 'situation) row))
-           (setq pos (+ pos chess-cn--board-grid-offsetset)) ;; 棋盘左侧偏移
-           (while (< col (car cord))
-             ;; 若 (col . row) 处有棋子，则增加 chess-cn--board-grid-width - 1 个位置，否则 增加 chess-cn--board-grid-width 个位置
-             (setq pos (+ pos (if (null (aref board-at-row col)) (if (= col 8) 2 chess-cn--board-grid-width) (if (= col 8) 1 (1- chess-cn--board-grid-width)))))
-             (setq col (1+ col)))
-           )
-         pos)))
+  "棋盘坐标转缓冲区位置，考虑有棋子和无棋子时的字符布局差异。"
+  (and (>= (car cord) 0) (<= (car cord) 8)
+       (>= (cdr cord) 0) (<= (cdr cord) 9)
+       (save-excursion
+         ;; 跳到目标棋子行
+         (goto-char chess-cn--board-start)
+         (forward-line (* (cdr cord) chess-cn--board-grid-high))
+         ;; 跳过左侧偏移
+         (move-to-column chess-cn--board-grid-offsetset)
+         ;; 逐列扫描到目标列，考虑每列的实际字符布局
+         (let ((target-col (car cord))
+               (current-col 0))
+           (while (< current-col target-col)
+             ;; 检查当前列是否有棋子
+             (let ((piece-at-col (chess-cn--get-piece-from-situation (cons current-col (cdr cord)))))
+               (if piece-at-col
+                   ;; 有棋子：跳过棋子字符(2个字符宽度) + 剩余格宽
+                   (forward-char (if (= current-col 8) 1 (1- chess-cn--board-grid-width)))
+                 ;; 无棋子：跳过完整格宽
+                 (forward-char (if (= current-col 8) 2 chess-cn--board-grid-width))))
+             (setq current-col (1+ current-col)))
+           (point)))))
 
 
 ;; 未使用

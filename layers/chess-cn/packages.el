@@ -75,6 +75,10 @@ Each entry is either:
   "Initialize chess-cn package"
   (load-file (expand-file-name "layers/chess-cn/local/chess-cn.el" dotspacemacs-directory))
 
+  ;; 确保象棋缓冲区进入 Evil normal 状态，从而应用下面的按键绑定
+  (when (featurep 'evil)
+    (evil-set-initial-state 'chinese-chess-cn--mode 'normal))
+
   ;; 设置 leader 按键到 SPC m 前缀
   (spacemacs/set-leader-keys-for-major-mode 'chinese-chess-cn--mode
     "n" 'chess-cn--new
@@ -84,16 +88,29 @@ Each entry is either:
 
   ;; 模式专用按键绑定：Vim 风格用 evil-define-key，Emacs 风格用 define-key
   (if (featurep 'evil)
-      (evil-define-key 'normal chinese-chess-cn--mode-map
-        (kbd "RET")    'chess-cn--step-cmd
-        (kbd "<up>")   'chess-cn--move-point-up
-        (kbd "<down>") 'chess-cn--move-point-down
-        (kbd "<left>") 'chess-cn--move-point-left
-        (kbd "<right>")'chess-cn--move-point-right
-        (kbd "h")      'chess-cn--move-point-left
-        (kbd "j")      'chess-cn--move-point-down
-        (kbd "k")      'chess-cn--move-point-up
-        (kbd "l")      'chess-cn--move-point-right)
+      (progn
+        ;; normal 状态绑定
+        (evil-define-key 'normal chinese-chess-cn--mode-map
+          (kbd "RET")    'chess-cn--step-cmd
+          (kbd "<up>")   'chess-cn--move-point-up
+          (kbd "<down>") 'chess-cn--move-point-down
+          (kbd "<left>") 'chess-cn--move-point-left
+          (kbd "<right>")'chess-cn--move-point-right
+          (kbd "h")      'chess-cn--move-point-left
+          (kbd "j")      'chess-cn--move-point-down
+          (kbd "k")      'chess-cn--move-point-up
+          (kbd "l")      'chess-cn--move-point-right)
+        ;; motion 状态也绑定一份，覆盖 special-mode 默认行为
+        (evil-define-key 'motion chinese-chess-cn--mode-map
+          (kbd "RET")    'chess-cn--step-cmd
+          (kbd "<up>")   'chess-cn--move-point-up
+          (kbd "<down>") 'chess-cn--move-point-down
+          (kbd "<left>") 'chess-cn--move-point-left
+          (kbd "<right>")'chess-cn--move-point-right
+          (kbd "h")      'chess-cn--move-point-left
+          (kbd "j")      'chess-cn--move-point-down
+          (kbd "k")      'chess-cn--move-point-up
+          (kbd "l")      'chess-cn--move-point-right))
     (progn
       (define-key chinese-chess-cn--mode-map (kbd "RET")    'chess-cn--step-cmd)
       (define-key chinese-chess-cn--mode-map (kbd "<up>")   'chess-cn--move-point-up)
@@ -109,5 +126,8 @@ Each entry is either:
             (lambda ()
               (setq-local global-hl-line-mode nil) ;; 关闭主缓冲区当前行高亮
               (setq-local cursor-type 'box)        ;; 设置主缓冲区光标为块状
+              ;; 进入缓冲区时强制切到 normal，避免 evil-collection/special-mode 默认 motion 状态
+              (when (featurep 'evil)
+                (evil-normal-state))
               ))
   )
