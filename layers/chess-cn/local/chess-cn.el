@@ -745,6 +745,7 @@ is-move t 为移动, nil 为吃子
     (plist-put chess-cn--playing 'curt-selected-cord nil)
     (plist-put chess-cn--playing 'curt-side (chess-cn--get-other-side (plist-get chess-cn--playing 'curt-side)))
     (chess-cn--push-history oldcord dstcord moved-piece nil) ;; 棋步历史记录
+    (run-hooks 'chess-cn-after-move-hook) ;; 运行走子后钩子
     ))
 
 (defun chess-cn--try-move-piece (oldcord dstcord)
@@ -785,6 +786,7 @@ is-move t 为移动, nil 为吃子
       (plist-put chess-cn--playing 'curt-selected-cord nil)
       (plist-put chess-cn--playing 'curt-side (chess-cn--get-other-side (plist-get chess-cn--playing 'curt-side)))
       (chess-cn--push-history oldcord dstcord kill-piece killed-piece) ;; 记录棋步历史
+      (run-hooks 'chess-cn-after-move-hook) ;; 运行走子后钩子
       )))
 
 (defun chess-cn--try-kill-piece (oldcord dstcord)

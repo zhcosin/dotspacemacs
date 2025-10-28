@@ -43,6 +43,7 @@
 (defconst chess-cn-packages
   '(
     (chess-cn :location local)
+    (ucci :location local)
     )
   "The list of Lisp packages required by the chess-cn layer.
 
@@ -130,4 +131,20 @@ Each entry is either:
               (when (featurep 'evil)
                 (evil-normal-state))
               ))
+  )
+
+(defun chess-cn/init-ucci ()
+  "Initialize ucci package"
+  (load-file (expand-file-name "layers/chess-cn/local/ucci.el" dotspacemacs-directory))
+  
+  ;; 设置 UCCI 相关的 leader 按键
+  (spacemacs/set-leader-keys-for-major-mode 'chinese-chess-cn--mode
+    "e" 'ucci-start-engine
+    "E" 'ucci-stop-engine
+    "a" 'ucci-get-engine-move
+    "A" 'ucci-toggle-ai
+    "h" 'ucci-get-hint
+    "s" 'ucci-engine-status
+    "d" 'ucci-toggle-debug
+    "H" 'ucci-start-human-vs-ai)
   )
