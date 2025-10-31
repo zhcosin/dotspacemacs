@@ -80,13 +80,6 @@ Each entry is either:
   (when (featurep 'evil)
     (evil-set-initial-state 'chinese-chess-cn--mode 'normal))
 
-  ;; 设置 leader 按键到 SPC m 前缀
-  (spacemacs/set-leader-keys-for-major-mode 'chinese-chess-cn--mode
-    "n" 'chess-cn--new
-    "u" 'chess-cn--undo
-    "s" 'chess-cn--save
-    "l" 'chess-cn--load)
-
   ;; 模式专用按键绑定：Vim 风格用 evil-define-key，Emacs 风格用 define-key
   (if (featurep 'evil)
       (progn
@@ -139,6 +132,10 @@ Each entry is either:
   
   ;; 设置 UCCI 相关的 leader 按键
   (spacemacs/set-leader-keys-for-major-mode 'chinese-chess-cn--mode
+    "n" 'chess-cn--new
+    "u" 'chess-cn--undo
+    "s" 'chess-cn--save
+    "l" 'chess-cn--load
     "e" 'ucci-start-engine
     "E" 'ucci-stop-engine
     "a" 'ucci-get-engine-move
