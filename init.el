@@ -60,6 +60,7 @@ This function should only modify configuration layer settings."
             latex-refresh-preview t)
      latex-toc
      markdown
+     nginx
      multiple-cursors
      (org :variables org-modules '(org-tempo))
      ;; 启用 PDF layer 以支持 PDF 预览
