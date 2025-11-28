@@ -582,6 +582,15 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; rg 的编码设置
+  (setq helm-ag-base-command "rg --no-heading --color=always --smart-case --encoding utf-8")
+  (when (eq system-type 'windows-nt)
+    (set-default 'process-coding-system-alist
+                 '(("[pP][lL][iI][nN][kK]" gbk-dos . gbk-dos)
+                   ("[cC][mM][dD][pP][rR][oO][xX][yY]" gbk-dos . gbk-dos)
+                   ;; 重点添加下面这一行，针对 rg 进程
+                   ("[rR][gG]" utf-8 . gbk-dos))))
+
   ;; 设置 org-mode 的换行
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
