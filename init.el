@@ -582,6 +582,21 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  ;; 设置窗口标题格式
+  ;;(setq frame-title-format "Spacemacs - %b")
+  (setq frame-title-format
+        '(:eval
+          (concat
+           "Spacemacs - "
+           (buffer-name)
+           ;; 如果文件被修改过，在标题前显示一个圆点作为提示
+           (if (and buffer-file-name (buffer-modified-p)) " •" "")
+           ;; 如果缓冲区对应一个文件，则显示其所在目录
+           (if buffer-file-name
+               (concat " (" (abbreviate-file-name default-directory) ")"))
+           )))
+
   ;; rg 的编码设置
   (setq helm-ag-base-command "rg --no-heading --color=always --smart-case --encoding utf-8")
   (when (eq system-type 'windows-nt)
