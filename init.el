@@ -609,7 +609,7 @@ before packages are loaded."
   ;; 设置 org-mode 的换行
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
-    (add-hook 'org-mode-hook 'visual-line-mode))
+    ;;(add-hook 'org-mode-hook 'visual-line-mode)
 
   ;; 配置 org-mode LaTeX 导出以支持中文
   (with-eval-after-load 'ox-latex
