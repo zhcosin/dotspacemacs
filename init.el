@@ -610,6 +610,8 @@ before packages are loaded."
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
     ;;(add-hook 'org-mode-hook 'visual-line-mode)
+  ;; 启用 org-mode 的 markdown 导出后端
+  (require 'ox-md)
 
   ;; 配置 org-mode LaTeX 导出以支持中文
   (with-eval-after-load 'ox-latex
