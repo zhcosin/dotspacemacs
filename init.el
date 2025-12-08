@@ -610,6 +610,10 @@ before packages are loaded."
   (with-eval-after-load 'org
     (setq org-startup-truncated nil)  ; 禁用截断长行
     ;;(add-hook 'org-mode-hook 'visual-line-mode)
+  ;; org 任务管理，任务状态定义
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "DOING(i)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+
   ;; 启用 org-mode 的 markdown 导出后端
   (require 'ox-md)
 
